@@ -1,4 +1,4 @@
-package entity;
+package entity.store;
 
 import jakarta.persistence.*;
 import lombok.Getter;

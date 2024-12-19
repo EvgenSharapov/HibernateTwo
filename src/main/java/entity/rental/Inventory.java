@@ -1,9 +1,13 @@
 package entity.rental;
 
+import entity.film.Film;
+import entity.store.Store;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -13,12 +17,20 @@ import java.util.Date;
 public class Inventory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(name="film_id",nullable=false)
-    private Integer filmId;
-    @Column(name="store_id",nullable=false)
-    private Integer storeId;
-    @Column(name="last_update",nullable=false,columnDefinition = "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
-    private Date lastUpdate;
+    @Column(name = "inventory_id")
+    private Integer id;
+
+    @ManyToOne
+    @JoinColumn(name="film_id",nullable=false)
+    private Film film;
+
+
+    @ManyToOne
+    @JoinColumn(name="store_id",nullable=false)
+    private Store store;
+
+    @Column(name="last_update",nullable=false)
+    @UpdateTimestamp
+    private LocalDateTime lastUpdate;
 
 }

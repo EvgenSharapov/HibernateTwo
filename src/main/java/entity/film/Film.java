@@ -5,14 +5,11 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.Year;
-import java.util.Date;
 import java.util.Set;
 
-import static org.hibernate.sql.InFragment.NULL;
 
 @Getter
 @Setter
@@ -60,6 +57,16 @@ public class Film {
 
     @Column(name="special_features",nullable=false,columnDefinition = "set('Trailers', 'Commentaries', 'Deleted Scenes', 'Behind the Scenes')")
     private String specialFeatures;
+
+    @ManyToMany
+    @JoinTable(name = "film_actor",joinColumns = @JoinColumn(name = "film_id", referencedColumnName = "film_id"),
+    inverseJoinColumns = @JoinColumn(name = "actor_id", referencedColumnName = "actor_id"))
+    private Set<Actor>actors;
+
+    @ManyToMany
+    @JoinTable(name = "film_category",joinColumns = @JoinColumn(name = "film_id", referencedColumnName = "film_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "category_id"))
+    private Set<Category>categories;
 
     @Column(name="last_update",nullable=false)
     @UpdateTimestamp
