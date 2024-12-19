@@ -4,11 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;
-
 import java.time.LocalDateTime;
-import java.util.Date;
-
-import static org.hibernate.sql.InFragment.NULL;
 
 @Getter
 @Setter
@@ -17,9 +13,12 @@ import static org.hibernate.sql.InFragment.NULL;
 public class Language {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "language_id")
     private Byte id;
+
     @Column(name="name",length = 20,nullable=false,columnDefinition="char")
     private String title;
+
     @Column(name="last_update",nullable=false)
     @UpdateTimestamp
     private LocalDateTime lastUpdate;

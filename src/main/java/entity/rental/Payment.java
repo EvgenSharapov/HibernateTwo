@@ -1,12 +1,14 @@
 package entity.rental;
 
+import entity.staff.Staff;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
-import java.util.Date;
-
-import static org.hibernate.sql.InFragment.NULL;
 
 @Getter
 @Setter
@@ -15,18 +17,30 @@ import static org.hibernate.sql.InFragment.NULL;
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(name="customer_id",nullable=false)
-    private Integer customerId;
-    @Column(name="staff_id",nullable=false)
-    private Integer staffId;
-    @Column(name="rental_id",columnDefinition = NULL)
-    private Integer rentalId;
+    @Column(name = "payment_id")
+    private Short id;
+
+    @ManyToOne
+    @JoinColumn(name="customer_id",nullable=false)
+    private Customer customer;
+
+    @ManyToOne
+    @JoinColumn(name="staff_id",nullable=false)
+    private Staff staff;
+
+    @OneToOne
+    @JoinColumn(name="rental_id")
+    private Rental rental;
+
     @Column(name="amount",nullable=false)
-    private Integer amount;
+    private BigDecimal amount;
+
     @Column(name="payment_date",nullable=false)
-    private Date paymentDate;
-    @Column(name="last_update",nullable=false,columnDefinition = "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
-    private Date lastUpdate;
+    @CreationTimestamp
+    private LocalDateTime paymentDate;
+
+    @Column(name="last_update",nullable=false)
+    @UpdateTimestamp
+    private LocalDateTime lastUpdate;
 
 }

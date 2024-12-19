@@ -1,12 +1,10 @@
-package entity;
+package entity.other;
 
 import entity.film.Film;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
-
-import static org.hibernate.sql.InFragment.NULL;
 
 @Getter
 @Setter

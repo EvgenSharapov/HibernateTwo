@@ -2,8 +2,9 @@ package entity.address;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.UpdateTimestamp;
+import java.time.LocalDateTime;
 
-import java.util.Date;
 
 @Getter
 @Setter
@@ -12,11 +13,15 @@ import java.util.Date;
 public class Country {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "country_id")
+    private Short id;
+
     @Column(name="country",length = 50,nullable=false)
     private String country;
+
     @Column(name="last_update",nullable=false)
-    private Date lastUpdate;
+    @UpdateTimestamp
+    private LocalDateTime lastUpdate;
 
 
 }

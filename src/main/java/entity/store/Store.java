@@ -1,10 +1,12 @@
 package entity.store;
 
+import entity.address.Address;
+import entity.staff.Staff;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.Date;
+import org.hibernate.annotations.UpdateTimestamp;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -13,11 +15,18 @@ import java.util.Date;
 public class Store {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(name="manager_staff_id",nullable=false)
-    private Integer managerStaffId;
-    @Column(name="address_id",nullable=false)
-    private Integer addressId;
-    @Column(name="last_update",nullable=false,columnDefinition = "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
-    private Date lastUpdate;
+    @Column(name = "store_id")
+    private Byte id;
+
+    @OneToOne
+    @JoinColumn(name="manager_staff_id",nullable=false)
+    private Staff staff;
+
+    @OneToOne
+    @JoinColumn(name="address_id",nullable=false)
+    private Address address;
+
+    @Column(name="last_update",nullable=false)
+    @UpdateTimestamp
+    private LocalDateTime lastUpdate;
 }
