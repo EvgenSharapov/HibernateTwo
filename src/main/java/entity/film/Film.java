@@ -8,7 +8,11 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.Year;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import static java.util.Objects.isNull;
 
 
 @Getter
@@ -28,6 +32,7 @@ public class Film {
     @Type(type="text")
     private String description;
 
+    @Convert(converter = YearAttributeConverter.class)
     @Column(name="release_year",columnDefinition = "year")
     private Year releaseYear;
 
@@ -52,8 +57,11 @@ public class Film {
     private BigDecimal replacementCost;
 
     @Enumerated(EnumType.STRING)
+    @Convert(converter = RatingConverter.class)
     @Column(name="rating",columnDefinition = "enum('G', 'PG', 'PG-13', 'R', 'NC-17')")
     private Rating rating;
+
+
 
     @Column(name="special_features",nullable=false,columnDefinition = "set('Trailers', 'Commentaries', 'Deleted Scenes', 'Behind the Scenes')")
     private String specialFeatures;
@@ -71,4 +79,24 @@ public class Film {
     @Column(name="last_update",nullable=false)
     @UpdateTimestamp
     private LocalDateTime lastUpdate;
+
+
+    public Set<SpecialFeatures> getSpecialFeatures() {
+        if(isNull(specialFeatures) || specialFeatures.isEmpty()){return null;}
+
+        Set<SpecialFeatures>special=new HashSet<>();
+        String[]splitResult = specialFeatures.split(",");
+        for (String s : splitResult) {
+            special.add(SpecialFeatures.getFeaturesByValue(s));
+        }
+        special.remove(null);
+        return special;
+    }
+
+    public void setSpecialFeatures(Set<SpecialFeatures> specialFeatures) {
+        if(isNull(specialFeatures)){this.specialFeatures = null;
+        } else{
+            this.specialFeatures = specialFeatures.stream().map(SpecialFeatures::getFeature).collect(Collectors.joining(","));
+        }
+    }
 }

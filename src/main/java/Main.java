@@ -5,12 +5,17 @@ import entity.other.FilmText;
 import entity.rental.*;
 import entity.staff.Staff;
 import entity.store.Store;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 
+import java.time.LocalDateTime;
 import java.util.Properties;
-
+@Getter
+@Setter
 public class Main {
     private final SessionFactory sessionFactory;
 
@@ -29,21 +34,8 @@ public class Main {
     private final StaffDAO staffDAO;
     private final StoreDAO storeDAO;
 
-    public Main(ActorDAO actorDAO, AddressDAO addressDAO, CityDAO cityDAO, CountryDAO countryDAO, CategoryDAO categoryDAO, FilmDAO filmDAO, LanguageDAO languageDAO, FilmTextDAO filmTextDAO, CustomerDAO customerDAO, InventoryDAO inventoryDAO, PaymentDAO paymentDAO, RentalDAO rentalDAO, StaffDAO staffDAO, StoreDAO storeDAO) {
-        this.actorDAO = actorDAO;
-        this.addressDAO = addressDAO;
-        this.cityDAO = cityDAO;
-        this.countryDAO = countryDAO;
-        this.categoryDAO = categoryDAO;
-        this.filmDAO = filmDAO;
-        this.languageDAO = languageDAO;
-        this.filmTextDAO = filmTextDAO;
-        this.customerDAO = customerDAO;
-        this.inventoryDAO = inventoryDAO;
-        this.paymentDAO = paymentDAO;
-        this.rentalDAO = rentalDAO;
-        this.staffDAO = staffDAO;
-        this.storeDAO = storeDAO;
+    public Main() {
+
         Properties properties = new Properties();
         properties.put(Environment.DRIVER, "com.p6spy.engine.spy.P6SpyDriver");
         properties.put(Environment.URL, "jdbc:p6spy:mysql://localhost:3305/movie");
@@ -72,9 +64,70 @@ public class Main {
                 .addAnnotatedClass(Store.class)
                 .addProperties(properties)
                 .buildSessionFactory();
+
+        actorDAO = new ActorDAO(sessionFactory);
+        addressDAO = new AddressDAO(sessionFactory);
+        cityDAO = new CityDAO(sessionFactory);
+        countryDAO = new CountryDAO(sessionFactory);
+        categoryDAO = new CategoryDAO(sessionFactory);
+        filmDAO = new FilmDAO(sessionFactory);
+        languageDAO = new LanguageDAO(sessionFactory);
+        filmTextDAO = new FilmTextDAO(sessionFactory);
+        customerDAO = new CustomerDAO(sessionFactory);
+        inventoryDAO = new InventoryDAO(sessionFactory);
+        paymentDAO = new PaymentDAO(sessionFactory);
+        rentalDAO = new RentalDAO(sessionFactory);
+        staffDAO = new StaffDAO(sessionFactory);
+        storeDAO = new StoreDAO(sessionFactory);
+
     }
 
     public static void main(String[] args) {
         Main main = new Main();
+        Customer customer = main.createCustomer();
+        main.customerReturnInventoryToStore();
+    }
+
+
+
+
+    private void customerReturnInventoryToStore() {
+        try(Session session = sessionFactory.getCurrentSession()){
+            session.beginTransaction();
+
+            Rental rental = rentalDAO.getAnyUnreturnedRental();
+            rental.setReturnDate(LocalDateTime.now());
+
+            rentalDAO.save(rental);
+
+            session.getTransaction().commit();}
+    }
+
+    private Customer createCustomer() {
+        try(Session session = sessionFactory.getCurrentSession()){
+            session.beginTransaction();
+            Store store = storeDAO.getItems(0,1).getFirst();
+            City city = storeDAO.getByName("Ambattur");
+
+            Address address = new Address();
+            address.setCity(city);
+            address.setAddress("Адрес1");
+            address.setDistrict("Дистинкт1");
+            address.setPhone("900-900-900-900");
+            addressDAO.save(address);
+
+            Customer customer = new Customer();
+            customer.setAddress(address);
+            customer.setEmail("gogo12@mail.ru");
+            customer.setStore(store);
+            customer.setFirstName("Иван");
+            customer.setLastName("Иванов");
+            customer.setIsActive(true);
+            customerDAO.save(customer);
+
+            session.getTransaction().commit();
+            return customer;
+        }
+
     }
 }

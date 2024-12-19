@@ -19,7 +19,7 @@ public class City {
     private Short id;
 
     @Column(name="city",length = 50,nullable=false)
-    private String address;
+    private String city;
 
     @ManyToOne
     @JoinColumn(name="country_id",nullable=false)

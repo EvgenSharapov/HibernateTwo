@@ -19,15 +19,16 @@ public enum SpecialFeatures {
     SpecialFeatures(String feature) {
         this.feature = feature;
     }
-    public static Optional<SpecialFeatures> getFeaturesByValue(String feature){
+
+    public static SpecialFeatures getFeaturesByValue(String feature){
         if(isNull(feature) || feature.isEmpty()){
-            return Optional.empty();}
+            return null;}
         SpecialFeatures[]values=SpecialFeatures.values();
         for(SpecialFeatures value : values){
             if(value.feature.equals(feature)){
-                return Optional.of(value);
+                return value;
             }
         }
-        return Optional.empty();
+        return null;
     }
 }
