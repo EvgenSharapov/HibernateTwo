@@ -56,7 +56,6 @@ public class Film {
     @Column(name="replacement_cost",nullable=false)
     private BigDecimal replacementCost;
 
-    @Enumerated(EnumType.STRING)
     @Convert(converter = RatingConverter.class)
     @Column(name="rating",columnDefinition = "enum('G', 'PG', 'PG-13', 'R', 'NC-17')")
     private Rating rating;

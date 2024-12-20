@@ -15,7 +15,10 @@ public abstract class GenericDao<T> {
         this.sessionFactory = sessionFactory;
     }
 
-    public T gebById(final int id){
+    public T getById(final int id){
+        return (T) getCurrentSession().get(clazz,id);
+    }
+    public T getByIdByte(final byte id){
         return (T) getCurrentSession().get(clazz,id);
     }
 
@@ -45,7 +48,7 @@ public abstract class GenericDao<T> {
     }
 
     public void deleteById(final int entityId){
-        final T entity = gebById(entityId);
+        final T entity = getById(entityId);
         delete(entity);
     }
 

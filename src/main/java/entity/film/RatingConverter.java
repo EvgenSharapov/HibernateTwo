@@ -13,8 +13,8 @@ public class RatingConverter implements AttributeConverter<Rating,String> {
     @Override
     public Rating convertToEntityAttribute(String s) {
         Rating[] values = Rating.values();
-        for(Rating rating:values){
-            if(s.equals(rating.getRating())){return rating;}
+        for(Rating rating : values){
+            if(rating.getRating().equals(s)){return rating;}
         }
         return null;
     }
